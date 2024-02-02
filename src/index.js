@@ -3,6 +3,12 @@ import {stdin, stdout, exit, argv, cwd, chdir} from 'node:process';
 import {join} from 'node:path';
 import {homedir} from 'node:os';
 import {showFilesAndDirectory} from "./listFilesAndDirectory.js";
+import {readFile} from "./ReadFile.js";
+import {renameFile} from "./RenameFile.js";
+import {copyFile} from "./CopyFile.js";
+import {createFile} from "./CreateFile.js";
+import {moveFile} from "./MoveFile.js";
+import {removeFile} from "./RemoveFile.js";
 
 const start = (name) => {
     const rl = createInterface({
@@ -12,7 +18,7 @@ const start = (name) => {
     rl.prompt();
     chdir(join(homedir()));
     console.log(`You are currently in ${cwd()}`);
-    rl.on('line', (line) => {
+    rl.on('line', async (line) => {
         if (line.trim() === 'up') {
             chdir('..');
         } else if (line.trim().split(' ')[0] === 'cd') {
@@ -22,7 +28,43 @@ const start = (name) => {
                 console.log('Operation failed');
             }
         } else if (line.trim() === 'ls') {
-            showFilesAndDirectory(cwd());
+            await showFilesAndDirectory(cwd());
+        } else if (line.trim().split(' ')[0] === 'cat') {
+            try {
+                await readFile(`${line.trim().split(' ')[1]}`);
+            }catch {
+                console.log('Operation failed');
+            }
+        } else if(`${line.trim().split(' ')[0]}` === 'add') {
+            try {
+                await createFile(cwd(), `${line.trim().split(' ')[1]}`);
+            }catch {
+                console.log('Operation failed');
+            }
+        }else if(line.trim().split(' ')[0] === 'rn'){
+            try {
+                await renameFile(cwd(), `${line.trim().split(' ')[1]}`, `${line.trim().split(' ')[2]}`);
+            }catch {
+                console.log('Operation failed');
+            }
+        } else if (line.trim().split(' ')[0] === 'cp') {
+            try {
+                await copyFile(`${line.trim().split(' ')[1]}`, `${line.trim().split(' ')[2]}`);
+            }catch {
+                console.log('Operation failed');
+            }
+        }else if (line.trim().split(' ')[0] === 'mv') {
+            try {
+                await moveFile(`${line.trim().split(' ')[1]}`, `${line.trim().split(' ')[2]}`);
+            }catch {
+                console.log('Operation failed');
+            }
+        }else if (line.trim().split(' ')[0] === 'rm') {
+            try {
+                await removeFile(`${line.trim().split(' ')[1]}`);
+            }catch {
+                console.log('Operation failed');
+            }
         } else if (line.trim() === 'close') {
             rl.close();
         } else {

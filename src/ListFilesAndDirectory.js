@@ -9,7 +9,17 @@ function checkItems(list) {
 
 const sort = list => [...list].sort((a, b) => a.name.localeCompare(b.name));
 
-const createTable = list => list.map(item => item.isDirectory() ? {Name: item.name, Type: 'directory'} : item.isFile() ? {Name: item.name, Type: 'file'} : null);
+function createTable  (list)  {
+    const result = [];
+    for(const item of list) {
+        if (item.isDirectory()) {
+            result.push({Name: item.name, Type: 'directory'});
+        } else if (item.isFile()) {
+            result.push({Name: item.name, Type: 'file'});
+        }
+    }
+    return result;
+}
 
 export async function showFilesAndDirectory(path) {
     const listItems = await readdir(path, {withFileTypes: true});
