@@ -9,6 +9,10 @@ import {copyFile} from "./CopyFile.js";
 import {createFile} from "./CreateFile.js";
 import {moveFile} from "./MoveFile.js";
 import {removeFile} from "./RemoveFile.js";
+import {getInfoOS} from "./InfoOS.js";
+import {hashFile} from "./HashFile.js";
+import {compressFile} from "./CompressFile.js";
+import {decompressFile} from "./DecompressFile.js";
 
 const start = (name) => {
     const rl = createInterface({
@@ -65,7 +69,27 @@ const start = (name) => {
             }catch {
                 console.log('Operation failed');
             }
-        } else if (line.trim() === 'close') {
+        }else if (line.trim().split(' ')[0] === 'os'){
+            getInfoOS(line.trim().split(' ')[1]);
+        }else if (line.trim().split(' ')[0] === 'hash') {
+            try {
+                await hashFile(`${line.trim().split(' ')[1]}`);
+            }catch {
+                console.log('Operation failed');
+            }
+        } else if (line.trim().split(' ')[0] === 'compress') {
+            try {
+                await compressFile(`${line.trim().split(' ')[1]}`, `${line.trim().split(' ')[2]}`);
+            }catch {
+                console.log('Operation failed');
+            }
+        }else if (line.trim().split(' ')[0] === 'decompress') {
+            try {
+                await decompressFile(`${line.trim().split(' ')[1]}`, `${line.trim().split(' ')[2]}`);
+            }catch {
+                console.log('Operation failed');
+            }
+        }else if (line.trim() === 'close') {
             rl.close();
         } else {
             console.log(`Invalid input`);
@@ -88,7 +112,6 @@ if (args.length === 1) {
     } else {
         console.log('Invalid input');
     }
-
 } else {
     console.log('Invalid input');
 }
